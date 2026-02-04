@@ -1,4 +1,3 @@
-
 import { Location, PinType } from './types';
 
 // 지도의 가로 왜곡을 해결하기 위한 캔버스 비율: 2600 x 3500
@@ -6,13 +5,18 @@ export const DEFAULT_MAP_IMAGE = 'https://i.ibb.co/nMWfqYyF/Dragon-Sword-Simple.
 
 // 핀 타입별 이미지 매핑
 export const PIN_IMAGES: Record<PinType, string> = {
-  '퀘': 'https://i.ibb.co/S4mqQxtf/quest.png',
-  '도': 'https://i.ibb.co/pv0xj42t/challange.png',
-  '토': 'https://i.ibb.co/xtshZ1ZL/Eliminate.png',
-  '달': 'https://i.ibb.co/Q7h4LmGh/moonkeybox.png',
+  '퀘': 'https://i.ibb.co/wNc4CZsj/quest-new.png',
+  '도': 'https://i.ibb.co/rRSB38pK/minagame.png',
+  '토': 'https://i.ibb.co/gZS9SDQb/Eliminate-new.png',
+  '달': 'https://i.ibb.co/ns9nJBqW/moonkeybox-new.png',
   '아': 'https://i.ibb.co/zh8vWw2g/itembox.png',
   '퍼': 'https://i.ibb.co/4RZXb192/puzzle.png',
-  '새': 'https://i.ibb.co/8nLp9W9F/egg.png',
+  '새': 'https://i.ibb.co/qYn43xYf/egg-new.png',
+  '감': 'https://i.ibb.co/TBMxK4jQ/potato.png',
+  '기': 'https://i.ibb.co/23sy1GZ5/ki-erk-crystal.png',
+  '추': 'https://i.ibb.co/7dPgQQHZ/chu-erk-crystal.png',
+  '회': 'https://i.ibb.co/cKn3mcXP/hoy-sang-crystal.png',
+  '망': 'https://i.ibb.co/3mT6NVkZ/mang-gak-crystal.png',
 };
 
 /**
@@ -169,6 +173,14 @@ export const LOCATIONS: Location[] = [
     description: '하늘의 별빛을 받아 신비롭게 빛나는 거대 고목입니다.',
     x: 93.85,
     y: 23.00,
+    type: 'landmark'
+  },
+  {
+    id: 'dragon-rock-mountain',
+    name: '용 바위산',
+    description: '거대한 용의 형상을 닮은 험준하고 신비로운 바위산입니다.',
+    x: 80.19,
+    y: 11.43,
     type: 'landmark'
   }
 ];

@@ -3,6 +3,9 @@ import React from 'react';
 import { PinType } from '../types';
 import { PIN_IMAGES } from '../constants';
 
+const TINY_TYPES: PinType[] = ['감', '기', '추', '회', '망'];
+const SMALL_TYPES: PinType[] = ['새'];
+
 interface CustomMarkerProps {
   type: PinType;
   comment: string;
@@ -15,14 +18,24 @@ interface CustomMarkerProps {
 }
 
 const CustomMarker: React.FC<CustomMarkerProps> = ({ type, comment, x, y, isAdmin, isFaded, onDelete, onClick }) => {
+  let sizeClass = 'w-[24px] h-[24px]';
+  if (TINY_TYPES.includes(type)) {
+    sizeClass = 'w-[15px] h-[15px]';
+  } else if (SMALL_TYPES.includes(type)) {
+    sizeClass = 'w-[18px] h-[18px]';
+  }
+  
+  // 관리자이거나, 새알('새') 타입이거나, 그 외 일반 타입일 경우 상호작용 가능
+  const isInteractive = isAdmin || type === '새' || (!TINY_TYPES.includes(type) && !SMALL_TYPES.includes(type));
+
   return (
     <div
       className={`absolute z-20 -translate-x-1/2 -translate-y-1/2 group pointer-events-auto transition-all duration-300 ${isFaded ? 'opacity-30 grayscale-[0.8] scale-90' : 'opacity-100'}`}
       style={{ left: `${x}%`, top: `${y}%` }}
     >
       <div 
-        onClick={(e) => { e.stopPropagation(); onClick(); }}
-        className="w-[24px] h-[24px] cursor-pointer transition-transform hover:scale-150 relative"
+        onClick={(e) => { e.stopPropagation(); if (isInteractive) onClick(); }}
+        className={`${sizeClass} ${isInteractive ? 'cursor-pointer hover:scale-150' : 'cursor-default'} transition-transform relative`}
       >
         {/* Glow effect */}
         {!isFaded && <div className="absolute inset-0 bg-white/20 blur-[2px] rounded-full scale-110"></div>}

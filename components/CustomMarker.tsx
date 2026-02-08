@@ -3,7 +3,7 @@ import React from 'react';
 import { PinType } from '../types';
 import { PIN_IMAGES } from '../constants';
 
-const TINY_TYPES: PinType[] = ['감', '기', '추', '회', '망'];
+const TINY_TYPES: PinType[] = ['감', '기', '추', '회', '망', '생', '태', '순', '활'];
 const SMALL_TYPES: PinType[] = ['새'];
 
 interface CustomMarkerProps {

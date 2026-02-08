@@ -1,3 +1,4 @@
+
 import { Location, PinType } from './types';
 
 // 지도의 가로 왜곡을 해결하기 위한 캔버스 비율: 2600 x 3500
@@ -17,6 +18,10 @@ export const PIN_IMAGES: Record<PinType, string> = {
   '추': 'https://i.ibb.co/7dPgQQHZ/chu-erk-crystal.png',
   '회': 'https://i.ibb.co/cKn3mcXP/hoy-sang-crystal.png',
   '망': 'https://i.ibb.co/3mT6NVkZ/mang-gak-crystal.png',
+  '생': 'https://i.ibb.co/dFCVm5j/saeng-gi-fluit.png',
+  '태': 'https://i.ibb.co/PZHp3bPk/taego-seed.png',
+  '순': 'https://i.ibb.co/XrLD3WbY/sunsu-drop.png',
+  '활': 'https://i.ibb.co/Gvfpt65D/hwallyeog-leaf.png',
 };
 
 /**

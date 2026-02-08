@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import { Compass, ChevronLeft, ChevronRight, Trash2, X, AlertCircle, Lock, Layers, Shield, User as UserIcon, Download, Upload, Copy, Check, Search, FileText, Loader2, HelpCircle } from 'lucide-react';
@@ -22,10 +23,15 @@ const PIN_TYPES: { type: PinType; label: string; color: string }[] = [
   { type: '추', label: '추억', color: 'bg-pink-500' },
   { type: '회', label: '회상', color: 'bg-blue-500' },
   { type: '망', label: '망각', color: 'bg-gray-500' },
+  // 4열: 생기, 태고, 순수, 활력
+  { type: '생', label: '생기', color: 'bg-emerald-400' },
+  { type: '태', label: '태고', color: 'bg-amber-700' },
+  { type: '순', label: '순수', color: 'bg-sky-300' },
+  { type: '활', label: '활력', color: 'bg-lime-500' },
 ];
 
 const MASS_ACTION_TYPES: PinType[] = ['퀘', '토', '도', '달', '아', '퍼'];
-const NO_COMMENT_TYPES: PinType[] = ['감', '기', '추', '회', '망'];
+const NO_COMMENT_TYPES: PinType[] = ['감', '기', '추', '회', '망', '생', '태', '순', '활'];
 
 const ADMIN_HASH = "MTAwNTE=";
 const STORAGE_KEY = 'dragon_sword_custom_pins';
@@ -632,7 +638,7 @@ const App: React.FC = () => {
               {PIN_TYPES.map(pt => {
                 const totalCount = customPins.filter(p => p.type === pt.type).length;
                 const foundCount = customPins.filter(p => p.type === pt.type && fadedPinKeys.includes(getFadedKey(p))).length;
-                const hideBadge = ['새', '감', '기', '추', '회', '망'].includes(pt.type);
+                const hideBadge = ['새', '감', '기', '추', '회', '망', '생', '태', '순', '활'].includes(pt.type);
                 
                 return (
                   <button 
@@ -783,7 +789,7 @@ const App: React.FC = () => {
                  <label className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Description</label>
                  <div className="bg-slate-950/50 rounded-xl p-4 border border-white/5 text-sm text-slate-200 leading-relaxed min-h-[80px]">{infoPin.comment || "상세 설명이 없습니다."}</div>
             </div>
-            {infoPin.type !== '새' && infoPin.type !== '감' && (
+            {infoPin.type !== '새' && infoPin.type !== '감' && !['생', '태', '순', '활'].includes(infoPin.type) && (
               <button onClick={() => toggleFindPin(infoPin)} className={`w-full py-4 flex items-center justify-center gap-2 font-bold rounded-2xl transition-all active:scale-95 shadow-lg ${fadedPinKeys.includes(getFadedKey(infoPin)) ? 'bg-slate-800 text-slate-400 hover:bg-slate-700' : 'bg-amber-600 text-white hover:bg-amber-500'}`}>
                 <Search size={18} />
                 {fadedPinKeys.includes(getFadedKey(infoPin)) ? "Find Cancel (탐색 취소)" : "Find (탐색 완료)"}

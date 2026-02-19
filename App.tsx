@@ -492,25 +492,29 @@ const App: React.FC = () => {
 
   // Bulk Find Handlers
   const handleFilterMouseDown = (name: string) => {
-    const bulkCategories = ["지역", "돌발", "상자", "달열쇠", "미니게임", "퍼즐"];
-    if (!bulkCategories.includes(name) || isAdmin) return;
-
+    // Always create a timer for all filters to distinguish between click and long-press
     sidebarLongPressTimer.current = window.setTimeout(() => {
-      const categoryPins = pins.filter(p => p.type === name);
-      if (categoryPins.length === 0) return;
-
-      const allFound = categoryPins.every(p => p.faded);
+      const bulkCategories = ["지역", "돌발", "상자", "달열쇠", "미니게임", "퍼즐"];
       
-      setBulkTargetCategory(name);
-      setBulkAction(allFound ? 'reset' : 'find');
-      setModalMode('bulk');
-
+      // Only process bulk logic if not Admin and in a supported category
+      if (!isAdmin && bulkCategories.includes(name)) {
+        const categoryPins = pins.filter(p => p.type === name);
+        if (categoryPins.length > 0) {
+          const allFound = categoryPins.every(p => p.faded);
+          setBulkTargetCategory(name);
+          setBulkAction(allFound ? 'reset' : 'find');
+          setModalMode('bulk');
+        }
+      }
+      
+      // Nullifying signals to MouseUp that the 2s long-press action was handled (or skipped for non-bulk items)
       sidebarLongPressTimer.current = null;
     }, 2000);
   };
 
   const handleFilterMouseUp = (name: string) => {
-    if (sidebarLongPressTimer.current) {
+    if (sidebarLongPressTimer.current !== null) {
+      // It was a short press (less than 2s), so toggle the filter normally
       window.clearTimeout(sidebarLongPressTimer.current);
       sidebarLongPressTimer.current = null;
       toggleFilter(name);

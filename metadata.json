@@ -1,5 +1,5 @@
 {
-  "name": "[MAPS] 드래곤소드",
-  "description": "A high-performance interactive game map utility for Dragon Sword, featuring precise X,Y coordinate tracking (0,0 at bottom-left), smooth wheel-based zooming (50%-200%), and constrained panning to prevent out-of-bounds view.",
+  "name": "[MAPS] 드래곤소드 (개발버전)",
+  "description": "A high-performance interactive game map utility for Dragon Sword, featuring precise X,Y coordinate tracking (0,0 at bottom-left), smooth wheel-based zooming (50%-150%), and constrained panning to prevent out-of-bounds view.",
   "requestFramePermissions": []
 }

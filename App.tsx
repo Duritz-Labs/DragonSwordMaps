@@ -11,7 +11,7 @@ const RESET_TIMESTAMP_KEY = "dragon_sword_last_reset_v1";
 const ORIG_WIDTH = 3638;
 const ORIG_HEIGHT = 4855;
 const MIN_SCALE = 0.5;
-const MAX_SCALE = 2.0;
+const MAX_SCALE = 2.5;
 const PIN_SIZE = 25;
 
 interface FilterItem {
@@ -57,6 +57,7 @@ const App: React.FC = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set(FILTER_ITEMS.map(i => i.name)));
   const [pins, setPins] = useState<MapPin[]>([]);
+  const [hideFound, setHideFound] = useState(false);
   
   // Modal State
   const [modalMode, setModalMode] = useState<'add' | 'edit' | 'info' | 'bulk' | null>(null);
@@ -435,16 +436,16 @@ const App: React.FC = () => {
 
         const mergedPins: MapPin[] = remotePins.map(rp => {
           const localMatch = localPins.find(lp => lp.type === rp.type && lp.x === rp.x && lp.y === rp.y);
-          if (localMatch) {
-            return {
-              ...localMatch,
-              comment: rp.comment
-            };
-          }
-          return rp;
+          return {
+            ...rp,
+            faded: localMatch ? localMatch.faded : rp.faded
+          };
         });
 
-        setPins(mergedPins);
+        // Keep manually added pins (those without 'remote-' prefix)
+        const manualPins = localPins.filter(lp => !lp.id.startsWith('remote-'));
+
+        setPins([...mergedPins, ...manualPins]);
 
       } catch (error) {
         console.error("Failed to load initial map data:", error);
@@ -579,6 +580,21 @@ const App: React.FC = () => {
           </div>
 
           <div>
+            {!isAdmin && (
+              <div className="flex justify-end mb-2 pr-1">
+                <button 
+                  onClick={() => setHideFound(!hideFound)}
+                  className={`flex items-center gap-1.5 px-2 py-1 rounded border text-[9px] font-bold transition-all ${
+                    hideFound 
+                      ? 'bg-orange-500/80 border-orange-400 text-white shadow-[0_0_8px_rgba(249,115,22,0.5)]' 
+                      : 'bg-white/5 border-white/10 text-white/40 hover:bg-white/10 hover:text-white/60'
+                  }`}
+                >
+                  <i className={`fas ${hideFound ? 'fa-eye-slash' : 'fa-eye'} text-[8px]`}></i>
+                  발견 숨기기
+                </button>
+              </div>
+            )}
             <div className="flex items-center justify-between mb-3 pr-1">
               <div className="flex items-center gap-2">
                 <div className="w-1 h-3 bg-blue-500 rounded-full"></div>
@@ -886,11 +902,17 @@ const App: React.FC = () => {
 
         {/* Render Saved Pins */}
         {pins
-          .filter(pin => activeFilters.has(pin.type))
+          .filter(pin => {
+            const isVisible = activeFilters.has(pin.type);
+            if (!isVisible) return false;
+            if (!isAdmin && hideFound && pin.faded) return false;
+            return true;
+          })
           .map(pin => {
             const filterItem = FILTER_ITEMS.find(i => i.name === pin.type);
             const icon = filterItem?.icon;
             const isFaded = isAdmin ? false : pin.faded;
+            const currentPinSize = ["기억", "추억", "회상", "망각", "감자"].includes(pin.type) ? 20 : PIN_SIZE;
             
             return (
               <div 
@@ -901,8 +923,8 @@ const App: React.FC = () => {
                 style={{
                   left: pin.x,
                   top: ORIG_HEIGHT - pin.y,
-                  width: PIN_SIZE,
-                  height: PIN_SIZE,
+                  width: currentPinSize,
+                  height: currentPinSize,
                   transform: `translate(-50%, -50%)`,
                 }}
               >

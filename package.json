@@ -1,11 +1,12 @@
 {
-  "name": "[maps] 드래곤소드",
+  "name": "[maps]-드래곤소드-(개발버전)",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "lint": "tsc --noEmit",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -11,7 +11,7 @@ const RESET_TIMESTAMP_KEY = "dragon_sword_last_reset_v1";
 const ORIG_WIDTH = 3638;
 const ORIG_HEIGHT = 4855;
 const MIN_SCALE = 0.5;
-const MAX_SCALE = 1.5;
+const MAX_SCALE = 2.0;
 const PIN_SIZE = 25;
 
 interface FilterItem {

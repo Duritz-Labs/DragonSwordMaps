@@ -58,6 +58,7 @@ const App: React.FC = () => {
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set(FILTER_ITEMS.map(i => i.name)));
   const [pins, setPins] = useState<MapPin[]>([]);
   const [hideFound, setHideFound] = useState(false);
+  const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
   
   // Modal State
   const [modalMode, setModalMode] = useState<'add' | 'edit' | 'info' | 'bulk' | null>(null);
@@ -179,6 +180,94 @@ const App: React.FC = () => {
 
   const handleMouseUp = () => {
     setIsDragging(false);
+    if (longPressTimer.current) {
+      window.clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (modalMode) return;
+    
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      setIsDragging(true);
+      dragStart.current = { x: touch.clientX - position.x, y: touch.clientY - position.y };
+
+      if (isAdmin) {
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (rect) {
+          const mouseX = touch.clientX - rect.left;
+          const mouseY = touch.clientY - rect.top;
+          const imgX = Math.round((mouseX - position.x) / scale);
+          const imgY = Math.round(ORIG_HEIGHT - (mouseY - position.y) / scale);
+
+          longPressTimer.current = window.setTimeout(() => {
+            setIsDragging(false);
+            setModalCoords({ imgX, imgY });
+            setModalMode('add');
+            setSelectedPinType(FILTER_ITEMS[0].name);
+            setPinComment("");
+            setDeleteConfirmInput("");
+          }, 1000);
+        }
+      }
+    } else if (e.touches.length === 2) {
+      if (longPressTimer.current) {
+        window.clearTimeout(longPressTimer.current);
+        longPressTimer.current = null;
+      }
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      setLastTouchDistance(dist);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (modalMode) return;
+
+    if (e.touches.length === 1 && isDragging) {
+      if (longPressTimer.current) {
+        window.clearTimeout(longPressTimer.current);
+        longPressTimer.current = null;
+      }
+      const touch = e.touches[0];
+      setPosition(clampPosition(touch.clientX - dragStart.current.x, touch.clientY - dragStart.current.y, scale));
+    } else if (e.touches.length === 2 && lastTouchDistance !== null) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      
+      const delta = (dist - lastTouchDistance) / 200;
+      const newScale = Math.min(Math.max(scale + delta, MIN_SCALE), MAX_SCALE);
+      
+      if (newScale !== scale) {
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (rect) {
+          const mouseX = midX - rect.left;
+          const mouseY = midY - rect.top;
+          const pointX = (mouseX - position.x) / scale;
+          const pointY = (mouseY - position.y) / scale;
+          const nextX = mouseX - pointX * newScale;
+          const nextY = mouseY - pointY * newScale;
+          
+          setPosition(clampPosition(nextX, nextY, newScale));
+          setScale(newScale);
+        }
+      }
+      setLastTouchDistance(dist);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    setLastTouchDistance(null);
     if (longPressTimer.current) {
       window.clearTimeout(longPressTimer.current);
       longPressTimer.current = null;
@@ -540,12 +629,15 @@ const App: React.FC = () => {
   return (
     <div 
       ref={containerRef}
-      className="relative w-full h-full bg-[#0d0d0d] overflow-hidden cursor-crosshair touch-none select-none"
+      className="relative w-full h-full bg-[#0d0d0d] overflow-hidden cursor-crosshair touch-manipulation select-none"
       onWheel={handleWheel}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Sidebar Trigger Button */}
       {!sidebarOpen && (

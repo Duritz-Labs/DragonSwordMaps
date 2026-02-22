@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 // Constants
 const MAP_IMAGE_URL = "https://raw.githubusercontent.com/Duritz-Labs/DragonSwordMaps/main/MapData_Relese/DragonSword_Simple.jpg";
 const LOGO_IMAGE_URL = "https://raw.githubusercontent.com/Duritz-Labs/DragonSwordMaps/main/MapData_Relese/icon/main_icon.jpg";
-const INITIAL_DATA_URL = "https://raw.githubusercontent.com/Duritz-Labs/DragonSwordMaps/main/MapData_Relese/DragonSwordMappinData_Relese.csv";
+const INITIAL_DATA_URL = "https://raw.githubusercontent.com/Duritz-Labs/DragonSwordMaps/main/MapData_Relese/DragonSwordMappinData_Relese.CSV";
 const LOCAL_STORAGE_KEY = "dragon_sword_map_pins_v1";
 const RESET_TIMESTAMP_KEY = "dragon_sword_last_reset_v1";
 

@@ -1,9 +1,0 @@
-{
-  "redirects": [
-    {
-      "source": "/:path*",
-      "destination": "https://dragonswordmaps.valuspoke.com/:path*",
-      "permanent": true
-    }
-  ]
-}

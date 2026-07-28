@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "dragonswordmaps.vercel.app"
+        }
+      ],
+      "destination": "https://dragonswordmaps.valuspoke.com/:path*",
+      "permanent": true
+    }
+  ]
+}
